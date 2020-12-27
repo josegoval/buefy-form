@@ -1,11 +1,9 @@
-<template> </template>
+<template lang="pug">
+  h1 hola
+</template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
-export default {
-  name: "CreateAccount",
-  components: {},
-};
+export default {};
 </script>
+
+<style></style>
