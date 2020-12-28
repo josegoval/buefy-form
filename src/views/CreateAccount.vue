@@ -10,6 +10,7 @@
         b-input(
           type="text"
           v-model="form.firstName"
+          @input="ensuresValidFirstName"
           )
       b-field(
         label="Last name"
@@ -19,39 +20,44 @@
         b-input(
           type="text"
           v-model="form.lastName"
+          @input="ensuresValidLastName"
           )
       b-field(
-        label="Username"
+        label="Username*"
         :type="{'is-danger': hasError('username')}"
         :message="getError('username')"
         )
         b-input(
           type="text"
           v-model="form.username"
+          @input="ensuresValidUsername"
           )
       b-field(
-        label="Password"
+        label="Password*"
         :type="{'is-danger': hasError('password')}"
         :message="getError('password')"
         )
         b-input(
           type="password"
           v-model="form.password"
+          @input="ensuresValidPassword"
           password-reveal
           )
       b-field(
-        label="Confirm assword"
+        label="Confirm assword*"
         :type="{'is-danger': hasError('confirmPassword')}"
         :message="getError('confirmPassword')"
         )
         b-input(
           type="password"
           v-model="form.confirmPassword"
+          @input="ensuresValidConfirmPassword"
           password-reveal
           )
       b-button(
         type="is-primary"
         @click="handleSubmit"
+        :disabled="disableSubmitButton"
       ) Submit
 </template>
 
@@ -74,6 +80,7 @@ export default {
         password: "",
         confirmPassword: "",
       },
+      disableSubmitButton: true,
     };
   },
   methods: {
@@ -81,62 +88,62 @@ export default {
       return /^[a-zA-Z ]+$/.test(text);
     },
     ensuresValidFirstName() {
-      if (!this.checkLetterAndSpaces(this.form.firstName)) {
-        return this.setError(
+      if (
+        this.form.firstName !== "" &&
+        !this.checkLetterAndSpaces(this.form.firstName)
+      ) {
+        return !(this.disableSubmitButton = this.setError(
           "firstName",
           "Please write only letters and spaces."
-        );
+        ));
       }
-      return this.setError("firstName", "");
+      return !(this.disableSubmitButton = this.setError("firstName", ""));
     },
     ensuresValidLastName() {
-      if (!this.checkLetterAndSpaces(this.form.lastName)) {
-        return this.setError(
+      if (
+        this.form.lastName !== "" &&
+        !this.checkLetterAndSpaces(this.form.lastName)
+      ) {
+        return !(this.disableSubmitButton = this.setError(
           "lastName",
           "Please write only letters and spaces."
-        );
+        ));
       }
-      return this.setError("lastName", "");
+      return !(this.disableSubmitButton = this.setError("lastName", ""));
     },
     ensuresValidUsername() {
       if (!/^[a-zA-Z_]+$/.test(this.form.username)) {
-        return this.setError(
+        return !(this.disableSubmitButton = this.setError(
           "username",
           "Please write only letters and underscores."
-        );
+        ));
       }
-      return this.setError("username", "");
+      return !(this.disableSubmitButton = this.setError("username", ""));
     },
     ensuresValidPassword() {
-      let validPassword;
-      let validConfirmPassword;
-
       if (this.form.password <= 8 || !isNaN(Number(this.form.password))) {
-        validPassword = this.setError(
+        return !(this.disableSubmitButton = this.setError(
           "password",
           "Please write more than 8 chars and not only numbers."
-        );
-      } else {
-        validPassword = this.setError("password", "");
+        ));
       }
-
+      return !(this.disableSubmitButton = this.setError("password", ""));
+    },
+    ensuresValidConfirmPassword() {
       if (this.form.password !== this.form.confirmPassword) {
-        validConfirmPassword = this.setError(
+        return !(this.disableSubmitButton = this.setError(
           "confirmPassword",
           "Both passwords must be the same."
-        );
-      } else {
-        validConfirmPassword = this.setError("confirmPassword", "");
+        ));
       }
-
-      return validPassword && validConfirmPassword;
+      return !(this.disableSubmitButton = this.setError("confirmPassword", ""));
     },
     /**
-     * @returns true if it's valid (errorMessage === ""), false if it's invalid.
+     * @returns true if it's has an error (errorMessage !== "").
      */
     setError(key, errorMessage) {
       this.formErrors[key] = errorMessage;
-      return errorMessage === "";
+      return errorMessage !== "";
     },
     hasError(key) {
       return (
@@ -152,8 +159,15 @@ export default {
       const validLastName = this.ensuresValidLastName();
       const validUsername = this.ensuresValidUsername();
       const validPassword = this.ensuresValidPassword();
+      const validConfirmPassword = this.ensuresValidConfirmPassword();
 
-      if (validFirstName && validLastName && validUsername && validPassword) {
+      if (
+        validFirstName &&
+        validLastName &&
+        validUsername &&
+        validPassword &&
+        validConfirmPassword
+      ) {
         alert("User created!");
       }
     },
