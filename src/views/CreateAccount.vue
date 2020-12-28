@@ -121,7 +121,10 @@ export default {
       return !(this.disableSubmitButton = this.setError("username", ""));
     },
     ensuresValidPassword() {
-      if (this.form.password <= 8 || !isNaN(Number(this.form.password))) {
+      if (
+        this.form.password.length <= 8 ||
+        !isNaN(Number(this.form.password))
+      ) {
         return !(this.disableSubmitButton = this.setError(
           "password",
           "Please write more than 8 chars and not only numbers."
