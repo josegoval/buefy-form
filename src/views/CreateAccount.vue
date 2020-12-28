@@ -21,7 +21,7 @@
           v-model="form.lastName"
           )
       b-field(
-        label="Username"
+        label="Username*"
         :type="{'is-danger': hasError('username')}"
         :message="getError('username')"
         )
@@ -30,7 +30,7 @@
           v-model="form.username"
           )
       b-field(
-        label="Password"
+        label="Password*"
         :type="{'is-danger': hasError('password')}"
         :message="getError('password')"
         )
@@ -40,7 +40,7 @@
           password-reveal
           )
       b-field(
-        label="Confirm assword"
+        label="Confirm password*"
         :type="{'is-danger': hasError('confirmPassword')}"
         :message="getError('confirmPassword')"
         )
@@ -81,62 +81,62 @@ export default {
       return /^[a-zA-Z ]+$/.test(text);
     },
     ensuresValidFirstName() {
-      if (!this.checkLetterAndSpaces(this.form.firstName)) {
-        return this.setError(
+      if (
+        this.form.firstName !== "" &&
+        !this.checkLetterAndSpaces(this.form.firstName)
+      ) {
+        return !this.setError(
           "firstName",
           "Please write only letters and spaces."
         );
       }
-      return this.setError("firstName", "");
+      return !this.setError("firstName", "");
     },
     ensuresValidLastName() {
-      if (!this.checkLetterAndSpaces(this.form.lastName)) {
-        return this.setError(
+      if (
+        this.form.lastName !== "" &&
+        !this.checkLetterAndSpaces(this.form.lastName)
+      ) {
+        return !this.setError(
           "lastName",
           "Please write only letters and spaces."
         );
       }
-      return this.setError("lastName", "");
+      return !this.setError("lastName", "");
     },
     ensuresValidUsername() {
       if (!/^[a-zA-Z_]+$/.test(this.form.username)) {
-        return this.setError(
+        return !this.setError(
           "username",
           "Please write only letters and underscores."
         );
       }
-      return this.setError("username", "");
+      return !this.setError("username", "");
     },
     ensuresValidPassword() {
-      let validPassword;
-      let validConfirmPassword;
-
-      if (this.form.password <= 8 || !isNaN(Number(this.form.password))) {
-        validPassword = this.setError(
-          "password",
-          "Please write more than 8 chars and not only numbers."
-        );
-      } else {
-        validPassword = this.setError("password", "");
-      }
-
-      if (this.form.password !== this.form.confirmPassword) {
-        validConfirmPassword = this.setError(
-          "confirmPassword",
-          "Both passwords must be the same."
-        );
-      } else {
-        validConfirmPassword = this.setError("confirmPassword", "");
-      }
+      const validPassword =
+        this.form.password <= 8 || !isNaN(Number(this.form.password))
+          ? !this.setError(
+              "password",
+              "Please write more than 8 chars and not only numbers."
+            )
+          : !this.setError("password", "");
+      let validConfirmPassword =
+        this.form.password !== this.form.confirmPassword
+          ? !this.setError(
+              "confirmPassword",
+              "Both passwords must be the same."
+            )
+          : !this.setError("confirmPassword", "");
 
       return validPassword && validConfirmPassword;
     },
     /**
-     * @returns true if it's valid (errorMessage === ""), false if it's invalid.
+     * @returns true if it's has an error (errorMessage !== "")
      */
     setError(key, errorMessage) {
       this.formErrors[key] = errorMessage;
-      return errorMessage === "";
+      return errorMessage !== "";
     },
     hasError(key) {
       return (
