@@ -115,7 +115,7 @@ export default {
     },
     ensuresValidPassword() {
       const validPassword =
-        this.form.password <= 8 || !isNaN(Number(this.form.password))
+        this.form.password.length <= 8 || !isNaN(Number(this.form.password))
           ? !this.setError(
               "password",
               "Please write more than 8 chars and not only numbers."
