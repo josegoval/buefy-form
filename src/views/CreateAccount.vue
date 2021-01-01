@@ -80,7 +80,7 @@ export default {
     checkLetterAndSpaces(text) {
       return /^[a-zA-Z ]+$/.test(text);
     },
-    ensuresValidFirstName() {
+    isValidFirstName() {
       this.setError("firstName", "");
 
       if (
@@ -92,7 +92,7 @@ export default {
 
       return !this.hasError("firstName");
     },
-    ensuresValidLastName() {
+    isValidLastName() {
       this.setError("lastName", "");
 
       if (
@@ -104,7 +104,7 @@ export default {
 
       return !this.hasError("lastName");
     },
-    ensuresValidUsername() {
+    isValidUsername() {
       this.setError("username", "");
 
       if (!/^[a-zA-Z_]+$/.test(this.form.username)) {
@@ -113,7 +113,7 @@ export default {
 
       return !this.hasError("username");
     },
-    ensuresValidPassword() {
+    isValidPassword() {
       this.setError("password", "");
       this.setError("confirmPassword", "");
 
@@ -135,6 +135,14 @@ export default {
 
       return true;
     },
+    isValidForm() {
+      const validFirstName = this.isValidFirstName();
+      const validLastName = this.isValidLastName();
+      const validUsername = this.isValidUsername();
+      const validPassword = this.isValidPassword();
+
+      return validFirstName && validLastName && validUsername && validPassword;
+    },
     setError(key, errorMessage) {
       this.formErrors[key] = errorMessage;
     },
@@ -148,14 +156,11 @@ export default {
       return this.hasError(key) ? this.formErrors[key] : "";
     },
     handleSubmit() {
-      const validFirstName = this.ensuresValidFirstName();
-      const validLastName = this.ensuresValidLastName();
-      const validUsername = this.ensuresValidUsername();
-      const validPassword = this.ensuresValidPassword();
-
-      if (validFirstName && validLastName && validUsername && validPassword) {
-        alert("User created!");
+      if (!this.isValidForm()) {
+        return;
       }
+
+      alert("User created!");
     }
   }
 };
