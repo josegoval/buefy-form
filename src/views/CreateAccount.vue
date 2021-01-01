@@ -65,15 +65,15 @@ export default {
         lastName: "",
         username: "",
         password: "",
-        confirmPassword: "",
+        confirmPassword: ""
       },
       formErrors: {
         firstName: "",
         lastName: "",
         username: "",
         password: "",
-        confirmPassword: "",
-      },
+        confirmPassword: ""
+      }
     };
   },
   methods: {
@@ -81,62 +81,62 @@ export default {
       return /^[a-zA-Z ]+$/.test(text);
     },
     ensuresValidFirstName() {
+      this.setError("firstName", "");
+
       if (
         this.form.firstName !== "" &&
         !this.checkLetterAndSpaces(this.form.firstName)
       ) {
-        return !this.setError(
-          "firstName",
-          "Please write only letters and spaces."
-        );
+        this.setError("firstName", "Please write only letters and spaces.");
       }
-      return !this.setError("firstName", "");
+
+      return !this.hasError("firstName");
     },
     ensuresValidLastName() {
+      this.setError("lastName", "");
+
       if (
         this.form.lastName !== "" &&
         !this.checkLetterAndSpaces(this.form.lastName)
       ) {
-        return !this.setError(
-          "lastName",
-          "Please write only letters and spaces."
-        );
+        this.setError("lastName", "Please write only letters and spaces.");
       }
-      return !this.setError("lastName", "");
+
+      return !this.hasError("lastName");
     },
     ensuresValidUsername() {
+      this.setError("username", "");
+
       if (!/^[a-zA-Z_]+$/.test(this.form.username)) {
-        return !this.setError(
-          "username",
-          "Please write only letters and underscores."
-        );
+        this.setError("username", "Please write only letters and underscores.");
       }
-      return !this.setError("username", "");
+
+      return !this.hasError("username");
     },
     ensuresValidPassword() {
-      const validPassword =
-        this.form.password.length <= 8 || !isNaN(Number(this.form.password))
-          ? !this.setError(
-              "password",
-              "Please write more than 8 chars and not only numbers."
-            )
-          : !this.setError("password", "");
-      let validConfirmPassword =
-        this.form.password !== this.form.confirmPassword
-          ? !this.setError(
-              "confirmPassword",
-              "Both passwords must be the same."
-            )
-          : !this.setError("confirmPassword", "");
+      this.setError("password", "");
+      this.setError("confirmPassword", "");
 
-      return validPassword && validConfirmPassword;
+      if (
+        this.form.password.length <= 8 ||
+        !isNaN(Number(this.form.password))
+      ) {
+        this.setError(
+          "password",
+          "Please write more than 8 chars and not only numbers."
+        );
+        return false;
+      }
+
+      if (this.form.password !== this.form.confirmPassword) {
+        this.setError("confirmPassword", "Both passwords must be the same.");
+        return false;
+      }
+
+      return true;
     },
-    /**
-     * @returns true if it's has an error (errorMessage !== "")
-     */
     setError(key, errorMessage) {
       this.formErrors[key] = errorMessage;
-      return errorMessage !== "";
     },
     hasError(key) {
       return (
@@ -156,8 +156,8 @@ export default {
       if (validFirstName && validLastName && validUsername && validPassword) {
         alert("User created!");
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
